@@ -4,7 +4,7 @@
  *	The MIT License.
  *	Created on: 14.07.2017
  *		Author: Mateusz Salamon
- *		 www.msalamon.pl
+ *		www.msalamon.pl
  *		mateusz@msalamon.pl
  */
 
@@ -43,6 +43,71 @@ void WS2812B_SetDiodeRGB(int16_t diode_id, uint8_t R, uint8_t G, uint8_t B)
 	ws2812b_array[diode_id].red = R;
 	ws2812b_array[diode_id].green = G;
 	ws2812b_array[diode_id].blue = B;
+}
+
+//
+//	Set diode with HSV model
+//
+//	Hue 0-359
+//	Saturation 0-255
+//	Birghtness(Value) 0-255
+//
+void WS2812B_SetDiodeHSV(int16_t diode_id, uint16_t Hue, uint8_t Saturation, uint8_t Brightness)
+{
+	if(diode_id >= WS2812B_LEDS || diode_id < 0) return;
+	uint16_t Sector, Fracts, p, q, t;
+
+	if(Saturation == 0)
+	{
+		ws2812b_array[diode_id].red = Brightness;
+		ws2812b_array[diode_id].green = Brightness;
+		ws2812b_array[diode_id]. blue = Brightness;
+	}
+	else
+	{
+		if(Hue >= 360) Hue = 359;
+
+		Sector = Hue / 60; // Sector 0 to 5
+		Fracts = Hue % 60;
+		p = (Brightness * (255 - Saturation)) / 256;
+		q = (Brightness * (255 - (Saturation * Fracts)/360)) / 256;
+		t = (Brightness * (255 - (Saturation * (360 - Fracts))/360)) / 256;
+
+
+		switch(Sector)
+		{
+		case 0:
+			ws2812b_array[diode_id].red = Brightness;
+			ws2812b_array[diode_id].green = (uint8_t)t;
+			ws2812b_array[diode_id]. blue = (uint8_t)p;
+			break;
+		case 1:
+			ws2812b_array[diode_id].red = (uint8_t)q;
+			ws2812b_array[diode_id].green = Brightness;
+			ws2812b_array[diode_id]. blue = (uint8_t)p;
+			break;
+		case 2:
+			ws2812b_array[diode_id].red = (uint8_t)p;
+			ws2812b_array[diode_id].green = Brightness;
+			ws2812b_array[diode_id]. blue = (uint8_t)t;
+			break;
+		case 3:
+			ws2812b_array[diode_id].red = (uint8_t)p;
+			ws2812b_array[diode_id].green = (uint8_t)q;
+			ws2812b_array[diode_id]. blue = Brightness;
+			break;
+		case 4:
+			ws2812b_array[diode_id].red = (uint8_t)t;
+			ws2812b_array[diode_id].green = (uint8_t)p;
+			ws2812b_array[diode_id]. blue = Brightness;
+			break;
+		default:		// case 5:
+			ws2812b_array[diode_id].red = Brightness;
+			ws2812b_array[diode_id].green = (uint8_t)p;
+			ws2812b_array[diode_id]. blue = (uint8_t)q;
+			break;
+		}
+	}
 }
 
 void WS2812B_Refresh()

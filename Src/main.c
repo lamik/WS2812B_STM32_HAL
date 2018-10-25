@@ -123,7 +123,33 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 
-//	RGB manipulation demo
+  //	HSV Value manipulation demo
+	  for(int loop = 0; loop < 10; loop++)
+	  {
+		  for(int v =0; v<256; v++)
+		  {
+			  for(uint8_t i = 0; i <= WS2812B_LEDS; i++)
+			  {
+				  j = (360/35) * i;
+				 WS2812B_SetDiodeHSV(i, j, 255, v);
+			  }
+			  HAL_Delay(1);
+			  WS2812B_Refresh();
+		  }
+
+		  for(int v =255; v>-1; v--)
+		  {
+			  for(uint8_t i = 0; i <= WS2812B_LEDS; i++)
+			  {
+				  j = 360/35 * i;
+				 WS2812B_SetDiodeHSV(i, j, 255, v);
+			  }
+			  HAL_Delay(1);
+			  WS2812B_Refresh();
+		  }
+	  }
+
+  //	RGB manipulation demo
 	  for(int v =0; v<30; v++)
 	  {
 		  for(uint8_t i = 0; i <= WS2812B_LEDS; i++)
@@ -133,6 +159,35 @@ int main(void)
 		  HAL_Delay(500);
 		  WS2812B_Refresh();
 	  }
+
+  //	HSV Saturation manipulation demo
+	  for(int loop = 0; loop < 10; loop++)
+	  {
+		  for(int v =0; v<256; v++)
+		  {
+			  for(uint8_t i = 0; i <= WS2812B_LEDS; i++)
+			  {
+				  j = (360/35) * i;
+				 WS2812B_SetDiodeHSV(i, j, v, 255);
+			  }
+			  HAL_Delay(1);
+			  WS2812B_Refresh();
+		  }
+
+		  for(int v =255; v>-1; v--)
+		  {
+			  for(uint8_t i = 0; i <= WS2812B_LEDS; i++)
+			  {
+				  j = 360/35 * i;
+				 WS2812B_SetDiodeHSV(i, j, v, 255);
+			  }
+			 HAL_Delay(1);
+			  WS2812B_Refresh();
+		  }
+	  }
+
+	  HAL_Delay(10);
+	}
 
   /* USER CODE END 3 */
 
