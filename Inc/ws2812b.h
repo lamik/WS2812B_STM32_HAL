@@ -25,4 +25,7 @@ void WS2812B_SetDiodeRGB(int16_t diode_id, uint8_t R, uint8_t G, uint8_t B);
 void WS2812B_SetDiodeHSV(int16_t diode_id, uint16_t Hue, uint8_t Saturation, uint8_t Brightness);
 void WS2812B_Refresh();
 
+// color correction
+uint8_t sine8(uint8_t x);
+uint8_t gamma8(uint8_t x);
 #endif /* WS2812B_H_ */
