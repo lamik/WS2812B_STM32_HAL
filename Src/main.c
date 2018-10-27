@@ -45,16 +45,14 @@
 
 /* USER CODE BEGIN Includes */
 #include "ws2812b.h"
+#include "ws2812b_fx.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-ws2812b_color color;
-uint8_t R[] = {255,0,0,255,0,128,0,0,128,0,64,0,0,64,0,32,0,0,32,0,16,0,0,16,0,8,0,0,8,0};
-uint8_t G[] = {0,255,0,255,255,0,128,0,255,255,0,64,0,64,64,0,32,0,32,32,0,16,0,16,16,0,8,0,8,8};
-uint8_t B[] = {0,0,255,0,255,0,0,128,0,255,0,0,64,0,64,0,0,32,0,32,0,0,16,0,18,0,0,8,0,8};
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -101,18 +99,14 @@ int main(void)
   MX_DMA_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
   WS2812B_Init(&hspi1);
-  for(uint8_t i = 0; i <= WS2812B_LEDS; i++)
-  {
-	  color.red = 0;
-	  color.green = 0;
-	  color.blue = 0;
-	  WS2812B_SetDiodeColor(i,color);
-  }
+  WS2812BFX_SetSpeed(5000);
+  WS2812BFX_SetColorRGB(0, 0,255,0);
+  WS2812BFX_SetColorRGB(1, 32,0,0);
+  WS2812BFX_SetColorRGB(2, 0,64,0);
+  WS2812BFX_SetMode(FX_MODE_WHITE_TO_COLOR);
+  WS2812BFX_Start();
 
-  WS2812B_Refresh();
-  uint16_t j;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -122,72 +116,8 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-
-  //	HSV Value manipulation demo
-	  for(int loop = 0; loop < 10; loop++)
-	  {
-		  for(int v =0; v<256; v++)
-		  {
-			  for(uint8_t i = 0; i <= WS2812B_LEDS; i++)
-			  {
-				  j = (360/35) * i;
-				 WS2812B_SetDiodeHSV(i, j, 255, v);
-			  }
-			  HAL_Delay(1);
-			  WS2812B_Refresh();
-		  }
-
-		  for(int v =255; v>-1; v--)
-		  {
-			  for(uint8_t i = 0; i <= WS2812B_LEDS; i++)
-			  {
-				  j = 360/35 * i;
-				 WS2812B_SetDiodeHSV(i, j, 255, v);
-			  }
-			  HAL_Delay(1);
-			  WS2812B_Refresh();
-		  }
-	  }
-
-  //	RGB manipulation demo
-	  for(int v =0; v<30; v++)
-	  {
-		  for(uint8_t i = 0; i <= WS2812B_LEDS; i++)
-		  {
-			  WS2812B_SetDiodeRGB(i, R[v], G[v], B[v]);
-		  }
-		  HAL_Delay(500);
-		  WS2812B_Refresh();
-	  }
-
-  //	HSV Saturation manipulation demo
-	  for(int loop = 0; loop < 10; loop++)
-	  {
-		  for(int v =0; v<256; v++)
-		  {
-			  for(uint8_t i = 0; i <= WS2812B_LEDS; i++)
-			  {
-				  j = (360/35) * i;
-				 WS2812B_SetDiodeHSV(i, j, v, 255);
-			  }
-			  HAL_Delay(1);
-			  WS2812B_Refresh();
-		  }
-
-		  for(int v =255; v>-1; v--)
-		  {
-			  for(uint8_t i = 0; i <= WS2812B_LEDS; i++)
-			  {
-				  j = 360/35 * i;
-				 WS2812B_SetDiodeHSV(i, j, v, 255);
-			  }
-			 HAL_Delay(1);
-			  WS2812B_Refresh();
-		  }
-	  }
-
-	  HAL_Delay(10);
-	}
+	  WS2812BFX_Callback();
+  }
 
   /* USER CODE END 3 */
 
@@ -244,7 +174,10 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_SYSTICK_Callback(void)
+{
+	WS2812BFX_SysTickCallback();
+}
 /* USER CODE END 4 */
 
 /**

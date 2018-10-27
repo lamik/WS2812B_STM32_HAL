@@ -31,7 +31,15 @@ void WS2812B_Init(SPI_HandleTypeDef * spi_handler)
 	hspi_ws2812b = spi_handler;
 }
 
-void WS2812B_SetDiodeColor(int16_t diode_id, ws2812b_color color)
+void WS2812B_SetDiodeColor(int16_t diode_id, uint32_t color)
+{
+	if(diode_id >= WS2812B_LEDS || diode_id < 0) return;
+	ws2812b_array[diode_id].red = ((color>>16)&0x000000FF);
+	ws2812b_array[diode_id].green = ((color>>8)&0x000000FF);
+	ws2812b_array[diode_id].blue = (color&0x000000FF);
+}
+
+void WS2812B_SetDiodeColorStruct(int16_t diode_id, ws2812b_color color)
 {
 	if(diode_id >= WS2812B_LEDS || diode_id < 0) return;
 	ws2812b_array[diode_id] = color;
@@ -45,6 +53,19 @@ void WS2812B_SetDiodeRGB(int16_t diode_id, uint8_t R, uint8_t G, uint8_t B)
 	ws2812b_array[diode_id].blue = B;
 }
 
+uint32_t WS2812B_GetColor(int16_t diode_id)
+{
+	uint32_t color = 0;
+	color |= ((ws2812b_array[diode_id].red&0xFF)<<16);
+	color |= ((ws2812b_array[diode_id].green&0xFF)<<8);
+	color |= (ws2812b_array[diode_id].blue&0xFF);
+	return color;
+}
+
+uint8_t* WS2812B_GetPixels(void)
+{
+	return (uint8_t*)ws2812b_array;
+}
 //
 //	Set diode with HSV model
 //
