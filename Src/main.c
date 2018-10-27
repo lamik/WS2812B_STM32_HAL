@@ -55,22 +55,16 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
+#include <stdlib.h>
 #include "ws2812b.h"
 #include "ws2812b_fx.h"
-#include "usbd_cdc_if.h"
+#include "usb_parsing.h"
 
-#define MODE_DELAY 15000
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-/* Private variables ---------------------------------------------------------*/
-uint8_t USBDataTX[40]; // Array for transmission USB messages
-uint8_t USBDataLength; // USB message length
-
-volatile uint16_t ModeTimer;
-uint8_t Mode;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -82,7 +76,7 @@ void SystemClock_Config(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-
+void USB_Parsing(void);
 /* USER CODE END 0 */
 
 /**
@@ -119,48 +113,44 @@ int main(void)
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
   WS2812B_Init(&hspi1);
-  WS2812BFX_SetSpeed(150);
-  WS2812BFX_SetColorRGB(0, 0,0,0);
-  WS2812BFX_SetColorRGB(1, 64,0,0);
-  WS2812BFX_SetColorRGB(2, 0,0,64);
 
-  Mode = 0;
-  WS2812BFX_SetMode(Mode);
-  WS2812BFX_Start();
-  WS2812BFX_SetColorRGB(0, 0, 64,0);
+  WS2812BFX_Init(3);	// Start 3 segments
 
-  ModeTimer = MODE_DELAY;
+  WS2812BFX_SetSpeed(0, 5000);	// Speed of segment 0
+  WS2812BFX_SetSpeed(1, 2000);	// Speed of segment 1
+  WS2812BFX_SetSpeed(2, 500);	// Speed of segment 2
+  WS2812BFX_SetColorRGB(0, 32,0,64);	// Set color 0
+  WS2812BFX_SetColorRGB(1, 32,0,0);		// Set color 1
+  WS2812BFX_SetColorRGB(2, 0,64,0);		// Set color 2
+  WS2812BFX_SetMode(0, FX_MODE_WHITE_TO_COLOR);	// Set mode segment 0
+
+  WS2812BFX_SetColorRGB(0, 16,64,0);
+  WS2812BFX_SetColorRGB(1, 0,32,64);
+  WS2812BFX_SetColorRGB(2, 64,0,0);
+  WS2812BFX_SetMode(1, FX_MODE_BLACK_TO_COLOR);	// Set mode segment 1
+
+  WS2812BFX_SetColorRGB(0, 16,64,0);
+  WS2812BFX_SetColorRGB(1, 0,32,64);
+  WS2812BFX_SetColorRGB(2, 64,0,0);
+  WS2812BFX_SetMode(2, FX_MODE_COLOR_WIPE); 	// Set mode segment 2
+
+  WS2812BFX_Start(0);	// Start segment 0
+  WS2812BFX_Start(1);	// Start segment 1
+  WS2812BFX_Start(2);	// Start segment 2
+  HAL_Delay(200);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  WS2812BFX_Callback();	// FX effects calllback
+
+	  USB_Parsing();	// USB communication parsing
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-	  WS2812BFX_Callback();
-
-	  if(!ModeTimer)
-	  {
-		  for(uint8_t i = 0; i < WS2812B_LEDS; i++)
-			  WS2812B_SetDiodeColor(i, 0);
-		  WS2812B_Refresh();
-
-		  USBDataLength = sprintf((char*)USBDataTX, "Mode number: %d\n\r", Mode);
-		  CDC_Transmit_FS(USBDataTX, USBDataLength);
-		  if(Mode == 1 || Mode == 2)
-			  WS2812BFX_SetSpeed(3000);
-		  else
-			  WS2812BFX_SetSpeed(200);
-
-		  WS2812BFX_SetMode(Mode);
-
-		  if(Mode < MODE_COUNT - 1) Mode++;
-		  else	Mode = 0;
-
-		  ModeTimer = MODE_DELAY;
-	  }
   }
 
   /* USER CODE END 3 */
@@ -228,8 +218,7 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 void HAL_SYSTICK_Callback(void)
 {
-	WS2812BFX_SysTickCallback();
-	if(ModeTimer) ModeTimer--;
+	WS2812BFX_SysTickCallback();	// FX effects software timers
 }
 /* USER CODE END 4 */
 

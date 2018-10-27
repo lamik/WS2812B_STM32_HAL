@@ -93,8 +93,8 @@
 /* USER CODE BEGIN PRIVATE_DEFINES */
 /* Define size for the receive and transmit buffer over CDC */
 /* It's up to user to redefine and/or remove those define */
-#define APP_RX_DATA_SIZE  1000
-#define APP_TX_DATA_SIZE  1000
+#define APP_RX_DATA_SIZE  40
+#define APP_TX_DATA_SIZE  40
 /* USER CODE END PRIVATE_DEFINES */
 
 /**
@@ -293,6 +293,18 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
   /* USER CODE BEGIN 6 */
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+
+	extern uint8_t USBDataRX[40]; // Array for receive USB messages
+	extern uint8_t USBReceivedDataFlag; // Received USB data flag
+
+	for(uint8_t i = 0; i < 40; i++)
+	{
+		USBDataRX[i] = 0; // Clear the RX buffer
+	}
+
+	strlcpy(USBDataRX, Buf, (*Len) + 1); // Copy data to receive buffer
+	USBReceivedDataFlag = 1; // Set the receive flag
+
   return (USBD_OK);
   /* USER CODE END 6 */
 }
