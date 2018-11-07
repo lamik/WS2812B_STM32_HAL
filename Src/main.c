@@ -57,13 +57,20 @@
 /* USER CODE BEGIN Includes */
 #include "ws2812b.h"
 #include "ws2812b_fx.h"
+#include "usbd_cdc_if.h"
+
+#define MODE_DELAY 15000
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
+uint8_t USBDataTX[40]; // Array for transmission USB messages
+uint8_t USBDataLength; // USB message length
 
+volatile uint16_t ModeTimer;
+uint8_t Mode;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -112,13 +119,17 @@ int main(void)
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
   WS2812B_Init(&hspi1);
-  WS2812BFX_SetSpeed(5000);
-  WS2812BFX_SetColorRGB(0, 0,255,0);
-  WS2812BFX_SetColorRGB(1, 32,0,0);
-  WS2812BFX_SetColorRGB(2, 0,64,0);
-  WS2812BFX_SetMode(FX_MODE_WHITE_TO_COLOR);
-  WS2812BFX_Start();
+  WS2812BFX_SetSpeed(150);
+  WS2812BFX_SetColorRGB(0, 0,0,0);
+  WS2812BFX_SetColorRGB(1, 64,0,0);
+  WS2812BFX_SetColorRGB(2, 0,0,64);
 
+  Mode = 0;
+  WS2812BFX_SetMode(Mode);
+  WS2812BFX_Start();
+  WS2812BFX_SetColorRGB(0, 0, 64,0);
+
+  ModeTimer = MODE_DELAY;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -129,6 +140,27 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 	  WS2812BFX_Callback();
+
+	  if(!ModeTimer)
+	  {
+		  for(uint8_t i = 0; i < WS2812B_LEDS; i++)
+			  WS2812B_SetDiodeColor(i, 0);
+		  WS2812B_Refresh();
+
+		  USBDataLength = sprintf((char*)USBDataTX, "Mode number: %d\n\r", Mode);
+		  CDC_Transmit_FS(USBDataTX, USBDataLength);
+		  if(Mode == 1 || Mode == 2)
+			  WS2812BFX_SetSpeed(3000);
+		  else
+			  WS2812BFX_SetSpeed(200);
+
+		  WS2812BFX_SetMode(Mode);
+
+		  if(Mode < MODE_COUNT - 1) Mode++;
+		  else	Mode = 0;
+
+		  ModeTimer = MODE_DELAY;
+	  }
   }
 
   /* USER CODE END 3 */
@@ -197,6 +229,7 @@ void SystemClock_Config(void)
 void HAL_SYSTICK_Callback(void)
 {
 	WS2812BFX_SysTickCallback();
+	if(ModeTimer) ModeTimer--;
 }
 /* USER CODE END 4 */
 

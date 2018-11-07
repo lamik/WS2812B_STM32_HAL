@@ -25,7 +25,7 @@
 #define DEFAULT_BRIGHTNESS 	50
 #define BRIGHTNESS_MAX 		255
 
-#define MODE_COUNT 		62
+#define MODE_COUNT 		58
 #define DEFAULT_MODE 	0
 
 #define FADE_RATE	2
@@ -121,8 +121,8 @@ void WS2812BFX_SetColorStruct(uint8_t id, ws2812b_color c);
 void WS2812BFX_SetColorRGB(uint8_t id, uint8_t r, uint8_t g, uint8_t b);
 void WS2812BFX_SetColorHSV(uint8_t id, uint16_t h, uint8_t s, uint8_t v);
 void WS2812BFX_SetColor(uint8_t id, uint32_t c);
-void WS2812BFX_SetColorAll(uint32_t c);
-void WS2812BFX_SetColorAllRGB(uint8_t r, uint8_t g, uint8_t b);
+void WS2812BFX_SetAll(uint32_t c);
+void WS2812BFX_SetAllRGB(uint8_t r, uint8_t g, uint8_t b);
 
 void WS2812BFX_RGBtoHSV(uint8_t r, uint8_t g, uint8_t b, uint16_t *h, uint8_t *s, uint8_t *v);
 void WS2812BFX_HSVtoRGB(uint16_t h, uint8_t s, uint8_t v, uint8_t *r, uint8_t *g, uint8_t *b);

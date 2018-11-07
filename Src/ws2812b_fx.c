@@ -228,24 +228,17 @@ void WS2812BFX_SetColor(uint8_t id, uint32_t c)
 	mColor_w[id].blue = (c&0x000000FF);
 }
 
-void WS2812BFX_SetColorAll(uint32_t c)
+void WS2812BFX_SetAll(uint32_t c)
 {
-	mColor[0] = c;
-	mColor_w[0].red = ((c>>16)&0x000000FF);
-	mColor_w[0].green = ((c>>8)&0x000000FF);
-	mColor_w[0].blue = (c&0x000000FF);
+
 	for(uint16_t i = 0; i < WS2812B_LEDS; i++)
 	{
-		WS2812B_SetDiodeRGB(i, mColor_w[0].red, mColor_w[0].green, mColor_w[0].blue);
+		WS2812B_SetDiodeRGB(i, ((c>>16)&0xFF), ((c>>8)&0xFF), (c&0xFF));
 	}
 }
 
-void WS2812BFX_SetColorAllRGB(uint8_t r, uint8_t g, uint8_t b)
+void WS2812BFX_SetAllRGB(uint8_t r, uint8_t g, uint8_t b)
 {
-	mColor[0] = ((r<<16)|(g<<8)|b);
-	mColor_w[0].red = r;
-	mColor_w[0].green = g;
-	mColor_w[0].blue = b;
 	for(uint16_t i = 0; i < WS2812B_LEDS; i++)
 	{
 		WS2812B_SetDiodeRGB(i, r, g, b);
@@ -629,7 +622,7 @@ void mode_black_to_color(void)
 void blink(uint32_t color1, uint32_t color2, uint8_t strobe)
 {
 	uint32_t color = ((mCounterModeCall & 1) == 0) ? color1 : color2;
-	WS2812BFX_SetColorAll(color);
+	WS2812BFX_SetAll(color);
 	if((mCounterModeCall & 1) == 0)
 		iModeDelay = strobe ? 20 : mSpeed / 2;
 	else
@@ -679,7 +672,7 @@ void mode_breath(void)
 	uint8_t g = mModeColor_w[0].green * lum / 256;
 	uint8_t b = mModeColor_w[0].blue * lum / 256;
 
-	WS2812BFX_SetColorAllRGB(r, g, b);
+	WS2812BFX_SetAllRGB(r, g, b);
 	mCounterModeStep += 2;
 	if(mCounterModeStep > (512-15)) mCounterModeStep = 15;
 	iModeDelay = delay;
@@ -776,7 +769,7 @@ void mode_color_sweep_random(void)
 void mode_random_color(void)
 {
 	mAuxParam = get_random_wheel_index(mAuxParam); // aux_param will store our random color wheel index
-	WS2812BFX_SetColorAll(color_wheel(mAuxParam));
+	WS2812BFX_SetAll(color_wheel(mAuxParam));
 	iModeDelay =  mSpeed;
 }
 
