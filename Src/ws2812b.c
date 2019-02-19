@@ -16,8 +16,8 @@
 
 #include "ws2812b.h"
 
-#define zero 0b00000011
-#define one 0b00011111
+#define zero 0b11000000
+#define one 0b11111000
 
 SPI_HandleTypeDef *hspi_ws2812b;
 ws2812b_color ws2812b_array[WS2812B_LEDS];
