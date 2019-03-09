@@ -105,7 +105,7 @@ FX_MODE_TRICOLOR_CHASE,
 FX_MODE_ICU,
 } fx_mode;
 
-FX_STATUS WS2812BFX_Init(uint8_t Segments);
+FX_STATUS WS2812BFX_Init(uint16_t Segments);
 FX_STATUS WS2812BFX_SegmentIncrease(void);
 FX_STATUS WS2812BFX_SegmentDecrease(void);
 uint8_t WS2812BFX_GetSegmentsQuantity(void);
@@ -113,28 +113,28 @@ uint8_t WS2812BFX_GetSegmentsQuantity(void);
 void WS2812BFX_SysTickCallback(void);
 void WS2812BFX_Callback(void);
 
-FX_STATUS WS2812BFX_Start(uint8_t Segment);
-FX_STATUS WS2812BFX_Stop(uint8_t Segment);
-FX_STATUS WS2812BFX_IsRunning(uint8_t Segment, uint8_t *Running);
+FX_STATUS WS2812BFX_Start(uint16_t Segment);
+FX_STATUS WS2812BFX_Stop(uint16_t Segment);
+FX_STATUS WS2812BFX_IsRunning(uint16_t Segment, uint8_t *Running);
 
-FX_STATUS WS2812BFX_SetMode(uint8_t Segment, fx_mode Mode);
-FX_STATUS WS2812BFX_GetMode(uint8_t Segment, fx_mode *Mode);
-FX_STATUS WS2812BFX_NextMode(uint8_t Segment);
-FX_STATUS WS2812BFX_PrevMode(uint8_t Segment);
-FX_STATUS WS2812BFX_SetReverse(uint8_t Segment, uint8_t Reverse);
-FX_STATUS WS2812BFX_GetReverse(uint8_t Segment, uint8_t *Reverse);
+FX_STATUS WS2812BFX_SetMode(uint16_t Segment, fx_mode Mode);
+FX_STATUS WS2812BFX_GetMode(uint16_t Segment, fx_mode *Mode);
+FX_STATUS WS2812BFX_NextMode(uint16_t Segment);
+FX_STATUS WS2812BFX_PrevMode(uint16_t Segment);
+FX_STATUS WS2812BFX_SetReverse(uint16_t Segment, uint8_t Reverse);
+FX_STATUS WS2812BFX_GetReverse(uint16_t Segment, uint8_t *Reverse);
 
-FX_STATUS WS2812BFX_SetSegmentSize(uint8_t Segment, uint16_t Start, uint16_t Stop);
-FX_STATUS WS2812BFX_GetSegmentSize(uint8_t Segment, uint16_t *Start, uint16_t *Stop);
-FX_STATUS WS2812BFX_SegmentIncreaseEnd(uint8_t Segment);
-FX_STATUS WS2812BFX_SegmentDecreaseEnd(uint8_t Segment);
-FX_STATUS WS2812BFX_SegmentIncreaseStart(uint8_t Segment);
-FX_STATUS WS2812BFX_SegmentDecreaseStart(uint8_t Segment);
+FX_STATUS WS2812BFX_SetSegmentSize(uint16_t Segment, uint16_t Start, uint16_t Stop);
+FX_STATUS WS2812BFX_GetSegmentSize(uint16_t Segment, uint16_t *Start, uint16_t *Stop);
+FX_STATUS WS2812BFX_SegmentIncreaseEnd(uint16_t Segment);
+FX_STATUS WS2812BFX_SegmentDecreaseEnd(uint16_t Segment);
+FX_STATUS WS2812BFX_SegmentIncreaseStart(uint16_t Segment);
+FX_STATUS WS2812BFX_SegmentDecreaseStart(uint16_t Segment);
 
-FX_STATUS WS2812BFX_SetSpeed(uint8_t Segment, uint16_t Speed);
-FX_STATUS WS2812BFX_GetSpeed(uint8_t Segment, uint16_t *Speed);
-FX_STATUS WS2812BFX_IncreaseSpeed(uint8_t Segment, uint16_t Speed);
-FX_STATUS WS2812BFX_DecreaseSpeed(uint8_t Segment, uint16_t Speed);
+FX_STATUS WS2812BFX_SetSpeed(uint16_t Segment, uint16_t Speed);
+FX_STATUS WS2812BFX_GetSpeed(uint16_t Segment, uint16_t *Speed);
+FX_STATUS WS2812BFX_IncreaseSpeed(uint16_t Segment, uint16_t Speed);
+FX_STATUS WS2812BFX_DecreaseSpeed(uint16_t Segment, uint16_t Speed);
 
 void WS2812BFX_SetColorStruct(uint8_t id, ws2812b_color c);
 void WS2812BFX_SetColorRGB(uint8_t id, uint8_t r, uint8_t g, uint8_t b);
@@ -142,8 +142,8 @@ FX_STATUS WS2812BFX_GetColorRGB(uint8_t id, uint8_t *r, uint8_t *g, uint8_t *b);
 void WS2812BFX_SetColorHSV(uint8_t id, uint16_t h, uint8_t s, uint8_t v);
 void WS2812BFX_SetColor(uint8_t id, uint32_t c);
 
-FX_STATUS WS2812BFX_SetAll(uint8_t Segment, uint32_t c);
-FX_STATUS WS2812BFX_SetAllRGB(uint8_t Segment, uint8_t r, uint8_t g, uint8_t b);
+FX_STATUS WS2812BFX_SetAll(uint16_t Segment, uint32_t c);
+FX_STATUS WS2812BFX_SetAllRGB(uint16_t Segment, uint8_t r, uint8_t g, uint8_t b);
 
 void WS2812BFX_RGBtoHSV(uint8_t r, uint8_t g, uint8_t b, uint16_t *h, uint8_t *s, uint8_t *v);
 void WS2812BFX_HSVtoRGB(uint16_t h, uint8_t s, uint8_t v, uint8_t *r, uint8_t *g, uint8_t *b);

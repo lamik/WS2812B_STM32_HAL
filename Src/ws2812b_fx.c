@@ -26,7 +26,7 @@ uint8_t 	mRunning;
 uint8_t 	mTriggered;
 uint8_t		mActualSegment;
 
-uint8_t 	mSegments;
+uint16_t 	mSegments;
 
 uint32_t		mColor[NUM_COLORS];
 ws2812b_color	mColor_w[NUM_COLORS];
@@ -190,7 +190,7 @@ void (*mMode[MODE_COUNT])(void) =
     mode_icu
 };
 
-FX_STATUS WS2812BFX_Init(uint8_t Segments)
+FX_STATUS WS2812BFX_Init(uint16_t Segments)
 {
 	if(Segments == 0 || Segments >= (WS2812B_LEDS / 2)) return FX_ERROR;
 
@@ -205,7 +205,7 @@ FX_STATUS WS2812BFX_Init(uint8_t Segments)
 	{
 		mSegments = Segments;
 
-		for(uint8_t i = 0; i < mSegments; i++)
+		for(uint16_t i = 0; i < mSegments; i++)
 		{
 			SegmentsTmp[i].Speed = DEFAULT_SPEED;
 			SegmentsTmp[i].Running = DEFAULT_MODE;
@@ -219,7 +219,7 @@ FX_STATUS WS2812BFX_Init(uint8_t Segments)
 	}
 	else	// Ws28b12b_Segments was before initialized
 	{
-		for(uint8_t i = 0; i < (Segments>mSegments?mSegments:Segments); i++)
+		for(uint16_t i = 0; i < (Segments>mSegments?mSegments:Segments); i++)
 		{
 			SegmentsTmp[i].ModeDelay = Ws28b12b_Segments[i].ModeDelay;
 
@@ -292,7 +292,7 @@ FX_STATUS WS2812BFX_SegmentDecrease(void)
 
 void WS2812BFX_SysTickCallback(void)
 {
-	for(uint8_t i = 0; i < mSegments; i++)
+	for(uint16_t i = 0; i < mSegments; i++)
 		if(Ws28b12b_Segments[i].ModeDelay > 0) Ws28b12b_Segments[i].ModeDelay--;
 }
 
@@ -301,7 +301,7 @@ void WS2812BFX_Callback()
 	static uint8_t trig = 0;;
   if(mRunning || mTriggered)
   {
-	  for(uint8_t i = 0; i < mSegments; i++)
+	  for(uint16_t i = 0; i < mSegments; i++)
 	  {
 		  if(Ws28b12b_Segments[i].ModeDelay == 0)
 		  {
@@ -322,7 +322,7 @@ void WS2812BFX_Callback()
   }
 }
 
-FX_STATUS WS2812BFX_SetMode(uint8_t Segment, fx_mode Mode)
+FX_STATUS WS2812BFX_SetMode(uint16_t Segment, fx_mode Mode)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	Ws28b12b_Segments[Segment].CounterModeCall = 0;
@@ -339,14 +339,14 @@ FX_STATUS WS2812BFX_SetMode(uint8_t Segment, fx_mode Mode)
 	return FX_OK;
 }
 
-FX_STATUS WS2812BFX_GetMode(uint8_t Segment, fx_mode *Mode)
+FX_STATUS WS2812BFX_GetMode(uint16_t Segment, fx_mode *Mode)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	*Mode = Ws28b12b_Segments[Segment].ActualMode;
 	return FX_OK;
 }
 
-FX_STATUS WS2812BFX_NextMode(uint8_t Segment)
+FX_STATUS WS2812BFX_NextMode(uint16_t Segment)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	Ws28b12b_Segments[Segment].CounterModeCall = 0;
@@ -357,7 +357,7 @@ FX_STATUS WS2812BFX_NextMode(uint8_t Segment)
 	return FX_OK;
 }
 
-FX_STATUS WS2812BFX_PrevMode(uint8_t Segment)
+FX_STATUS WS2812BFX_PrevMode(uint16_t Segment)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	Ws28b12b_Segments[Segment].CounterModeCall = 0;
@@ -368,7 +368,7 @@ FX_STATUS WS2812BFX_PrevMode(uint8_t Segment)
 	return FX_OK;
 }
 
-FX_STATUS WS2812BFX_SetReverse(uint8_t Segment, uint8_t Reverse)
+FX_STATUS WS2812BFX_SetReverse(uint16_t Segment, uint8_t Reverse)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	WS2812BFX_SetAll(Segment, BLACK); // Set all 'old' segment black
@@ -379,14 +379,14 @@ FX_STATUS WS2812BFX_SetReverse(uint8_t Segment, uint8_t Reverse)
 	return FX_OK;
 }
 
-FX_STATUS WS2812BFX_GetReverse(uint8_t Segment, uint8_t *Reverse)
+FX_STATUS WS2812BFX_GetReverse(uint16_t Segment, uint8_t *Reverse)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	*Reverse = Ws28b12b_Segments[Segment].Reverse;
 	return FX_OK;
 }
 
-FX_STATUS WS2812BFX_SegmentIncreaseStart(uint8_t Segment)
+FX_STATUS WS2812BFX_SegmentIncreaseStart(uint16_t Segment)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	WS2812BFX_SetAll(Segment, BLACK); // Set all 'old' segment black
@@ -398,7 +398,7 @@ FX_STATUS WS2812BFX_SegmentIncreaseStart(uint8_t Segment)
 	return FX_OK;
 }
 
-FX_STATUS WS2812BFX_SegmentDecreaseStart(uint8_t Segment)
+FX_STATUS WS2812BFX_SegmentDecreaseStart(uint16_t Segment)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	WS2812BFX_SetAll(Segment, BLACK); // Set all 'old' segment black
@@ -420,7 +420,7 @@ FX_STATUS WS2812BFX_SegmentDecreaseStart(uint8_t Segment)
 	return FX_OK;
 }
 
-FX_STATUS WS2812BFX_SegmentIncreaseEnd(uint8_t Segment)
+FX_STATUS WS2812BFX_SegmentIncreaseEnd(uint16_t Segment)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	WS2812BFX_SetAll(Segment, BLACK); // Set all 'old' segment black
@@ -444,7 +444,7 @@ FX_STATUS WS2812BFX_SegmentIncreaseEnd(uint8_t Segment)
 	return FX_OK;
 }
 
-FX_STATUS WS2812BFX_SegmentDecreaseEnd(uint8_t Segment)
+FX_STATUS WS2812BFX_SegmentDecreaseEnd(uint16_t Segment)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	WS2812BFX_SetAll(Segment, BLACK); // Set all 'old' segment black
@@ -456,7 +456,7 @@ FX_STATUS WS2812BFX_SegmentDecreaseEnd(uint8_t Segment)
 	return FX_OK;
 }
 
-FX_STATUS WS2812BFX_SetSegmentSize(uint8_t Segment, uint16_t Start, uint16_t Stop)
+FX_STATUS WS2812BFX_SetSegmentSize(uint16_t Segment, uint16_t Start, uint16_t Stop)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	if(Start >= (WS2812B_LEDS - 1)) return FX_ERROR;
@@ -470,7 +470,7 @@ FX_STATUS WS2812BFX_SetSegmentSize(uint8_t Segment, uint16_t Start, uint16_t Sto
 	return FX_OK;
 }
 
-FX_STATUS WS2812BFX_GetSegmentSize(uint8_t Segment, uint16_t *Start, uint16_t *Stop)
+FX_STATUS WS2812BFX_GetSegmentSize(uint16_t Segment, uint16_t *Start, uint16_t *Stop)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	*Start = Ws28b12b_Segments[Segment].IdStart;
@@ -478,7 +478,7 @@ FX_STATUS WS2812BFX_GetSegmentSize(uint8_t Segment, uint16_t *Start, uint16_t *S
 	return FX_OK;
 }
 
-FX_STATUS WS2812BFX_Start(uint8_t Segment)
+FX_STATUS WS2812BFX_Start(uint16_t Segment)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	Ws28b12b_Segments[Segment].CounterModeCall = 0;
@@ -500,7 +500,7 @@ uint8_t WS2812BFX_IsAnyRunning(void)
 	return 0;
 }
 
-FX_STATUS WS2812BFX_Stop(uint8_t Segment)
+FX_STATUS WS2812BFX_Stop(uint16_t Segment)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	Ws28b12b_Segments[Segment].Running = 0;
@@ -510,7 +510,7 @@ FX_STATUS WS2812BFX_Stop(uint8_t Segment)
 //	  strip_off();
 }
 
-FX_STATUS WS2812BFX_IsRunning(uint8_t Segment, uint8_t *Running)
+FX_STATUS WS2812BFX_IsRunning(uint16_t Segment, uint8_t *Running)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	*Running = Ws28b12b_Segments[Segment].Running;
@@ -679,7 +679,7 @@ void WS2812BFX_SetColor(uint8_t id, uint32_t c)
 	mColor_w[id].blue = (c&0x000000FF);
 }
 
-FX_STATUS WS2812BFX_SetAll(uint8_t Segment, uint32_t c)
+FX_STATUS WS2812BFX_SetAll(uint16_t Segment, uint32_t c)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	for(uint16_t i = 0; i < (Ws28b12b_Segments[Segment].IdStop - Ws28b12b_Segments[Segment].IdStart + 1); i++)
@@ -689,7 +689,7 @@ FX_STATUS WS2812BFX_SetAll(uint8_t Segment, uint32_t c)
 	return FX_OK;
 }
 
-FX_STATUS WS2812BFX_SetAllRGB(uint8_t Segment, uint8_t r, uint8_t g, uint8_t b)
+FX_STATUS WS2812BFX_SetAllRGB(uint16_t Segment, uint8_t r, uint8_t g, uint8_t b)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	for(uint16_t i = 0; i < SEGMENT_LENGTH; i++)
@@ -699,7 +699,7 @@ FX_STATUS WS2812BFX_SetAllRGB(uint8_t Segment, uint8_t r, uint8_t g, uint8_t b)
 	return FX_OK;
 }
 
-FX_STATUS WS2812BFX_SetSpeed(uint8_t Segment, uint16_t Speed)
+FX_STATUS WS2812BFX_SetSpeed(uint16_t Segment, uint16_t Speed)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	if(Speed < SPEED_MIN) Speed = SPEED_MIN;
@@ -709,19 +709,19 @@ FX_STATUS WS2812BFX_SetSpeed(uint8_t Segment, uint16_t Speed)
 	return FX_OK;
 }
 
-FX_STATUS WS2812BFX_GetSpeed(uint8_t Segment, uint16_t *Speed)
+FX_STATUS WS2812BFX_GetSpeed(uint16_t Segment, uint16_t *Speed)
 {
 	if(Segment >= mSegments) return FX_ERROR;
 	*Speed = Ws28b12b_Segments[Segment].Speed;
 	return FX_OK;
 }
 
-FX_STATUS WS2812BFX_IncreaseSpeed(uint8_t Segment, uint16_t Speed)
+FX_STATUS WS2812BFX_IncreaseSpeed(uint16_t Segment, uint16_t Speed)
 {
 	return WS2812BFX_SetSpeed(Segment, Ws28b12b_Segments[mActualSegment].Speed + Speed);
 }
 
-FX_STATUS WS2812BFX_DecreaseSpeed(uint8_t Segment, uint16_t Speed)
+FX_STATUS WS2812BFX_DecreaseSpeed(uint16_t Segment, uint16_t Speed)
 {
 	return WS2812BFX_SetSpeed(Segment, Ws28b12b_Segments[mActualSegment].Speed - Speed);
 }
