@@ -192,7 +192,14 @@ void (*mMode[MODE_COUNT])(void) =
 
 FX_STATUS WS2812BFX_Init(uint16_t Segments)
 {
-	if(Segments == 0 || Segments >= (WS2812B_LEDS / 2)) return FX_ERROR;
+	if(Segments == 0) return FX_ERROR;
+	if(Segments > (WS2812B_LEDS / 2))
+	{
+		if(Segments > WS2812B_LEDS)
+		{
+			return FX_ERROR;
+		}
+	}
 
 	uint16_t div = 0;
 	ws2812bfx_s *SegmentsTmp = NULL;
