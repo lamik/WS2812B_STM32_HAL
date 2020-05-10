@@ -213,7 +213,7 @@ FX_STATUS WS2812BFX_Init(uint16_t Segments)
 			SegmentsTmp[i].IdStart = div;
 			div += ((WS2812B_LEDS + 1) / Segments) - 1;
 			SegmentsTmp[i].IdStop = div;
-			if(SegmentsTmp[i].IdStop >= WS2812B_LEDS) Ws28b12b_Segments[i].IdStop = WS2812B_LEDS - 1;
+			if(SegmentsTmp[i].IdStop >= WS2812B_LEDS) SegmentsTmp[i].IdStop = WS2812B_LEDS - 1;
 			div++;
 		}
 	}
