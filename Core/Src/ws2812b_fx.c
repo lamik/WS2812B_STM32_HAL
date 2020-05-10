@@ -625,8 +625,8 @@ void WS2812BFX_HSVtoRGB(uint16_t h, uint8_t s, uint8_t v, uint8_t *r, uint8_t *g
 		Sector = h / 60; // Sector 0 to 5
 		Fracts = h % 60;
 		p = (v * (255 - s)) / 256;
-		q = (v * (255 - (s * Fracts)/360)) / 256;
-		t = (v * (255 - (s * (360 - Fracts))/360)) / 256;
+		q = (v * (255 - (s * Fracts)/60)) / 256;
+		t = (v * (255 - (s * (59 - Fracts))/60)) / 256;
 
 
 		switch(Sector)

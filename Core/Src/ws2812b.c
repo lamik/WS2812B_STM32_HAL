@@ -91,8 +91,8 @@ void WS2812B_SetDiodeHSV(int16_t diode_id, uint16_t Hue, uint8_t Saturation, uin
 		Sector = Hue / 60; // Sector 0 to 5
 		Fracts = Hue % 60;
 		p = (Brightness * (255 - Saturation)) / 256;
-		q = (Brightness * (255 - (Saturation * Fracts)/360)) / 256;
-		t = (Brightness * (255 - (Saturation * (360 - Fracts))/360)) / 256;
+		q = (Brightness * (255 - (Saturation * Fracts)/60)) / 256;
+		t = (Brightness * (255 - (Saturation * (59 - Fracts))/60)) / 256;
 
 
 		switch(Sector)
